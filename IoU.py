@@ -9,7 +9,7 @@ Created on Sat Oct  8 13:31:52 2022
 import cv2
 import random
 
-
+# 计算iou值函数
 def iou(gt_box, b_box):
     '''
     计算iou
@@ -44,14 +44,14 @@ def iou(gt_box, b_box):
     # 如果两个框在y方向有交集，height>0；否则 ，height<0
     height = heightA + heightB - y_length
     height = max(0, height)
-
+    # 计算面积及iou值
     interArea = width * height
     boxAArea = widthA * heightA
     boxBArea = widthB * heightB
     iou = interArea / (boxAArea + boxBArea - interArea)
     return iou
 
-
+# 构造随机矩形函数
 def rect():
     x0 = random.randint(0, 1152)
     x1 = random.randint(0, 1152)
@@ -60,21 +60,18 @@ def rect():
     box = [x0, y0, x1, y1]
     return box
 
-
+# 构造ground true和bounding box
 gtBox = rect()
 bBox = rect()
 
-print(iou(gtBox, bBox))
-
+#读取容器
 image = cv2.imread("image/x.jpg")
-
-cv2.rectangle(image, tuple(gtBox[:2]),
-              tuple(gtBox[2:]), (0, 255, 0), 2)
-cv2.rectangle(image, tuple(bBox[:2]),
-              tuple(bBox[2:]), (0, 0, 255), 2)
+# 绘制容器，iou值
+cv2.rectangle(image, tuple(gtBox[:2]), tuple(gtBox[2:]), (0, 255, 0), 2)
+cv2.rectangle(image, tuple(bBox[:2]), tuple(bBox[2:]), (0, 0, 255), 2)
 iouValue = iou(gtBox, bBox)
-
-
+cv2.putText(image, "IoU: {:.4f}".format(iouValue), (10, 30),
+            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
 cv2.imshow("Image", image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
